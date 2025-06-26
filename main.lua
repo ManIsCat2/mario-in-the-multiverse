@@ -75,7 +75,7 @@ local function mario_update(m)
         gGlobalSyncTable.coins = 999
     end
 
-    if (gPlayerSyncTable[0].abilityId == ABILITY_CUTTER) or using_ability(m, ABILITY_GADGET_WATCH) then
+    if (gPlayerSyncTable[m.playerIndex].abilityId == ABILITY_CUTTER) or using_ability(m, ABILITY_GADGET_WATCH) then
         m.marioBodyState.capState = m.marioBodyState.capState | MARIO_HAS_DEFAULT_CAP_OFF
     end
 end

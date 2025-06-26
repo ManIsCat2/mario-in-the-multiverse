@@ -1571,7 +1571,7 @@ function bhv_collectable_painting(obj)
         --end
     elseif obj.oAction == 1 then
         -- Initialization
-        --[[local texture = segmented_to_virtual(collectable_painting_painting_rgba16)
+        --[[local texture = (collectable_painting_painting_rgba16)
         local rom_location = painting_data + paintingIndex * 2048
         dma_read(texture, rom_location, rom_location + 2048)
 
@@ -3027,6 +3027,183 @@ function bhv_crane_rock_loop(o)
             spawn_default_star(8535, 4140 + 30, 8022)
         end
 
+        obj_mark_for_deletion(o)
+    end
+end
+
+local WATCH_DISTANCE = 1300.0
+
+local trinkets_shot_f = 0;
+
+local bruh_scale = 1.0
+local last_target = nil
+
+function find_nearest_watch_target(o)
+    local targetable_behavior_list = {
+        id_bhvFloorSwitchAnimatesObject,
+        id_bhvFloorSwitchGrills,
+        id_bhvFloorSwitchHardcodedModel,
+        id_bhvFloorSwitchHiddenObjects,
+        id_bhvBlueCoinSwitch,
+        id_bhvExclamationBox,
+        id_bhvBreakableBox,
+        id_bhvBreakableBoxSmall,
+        id_bhvMessagePanel,
+        bhvStarPieceSwitch,
+        --bhvKeypad,
+        --bhvGMarxDoor,
+        --bhvWoodenLever,
+        --bhvFTrinket,
+        --bhvFblastwall,
+        id_bhvSignOnWall,
+        bhvPaintGun,
+    }
+    local result
+    local closest = nil
+    local closest_dist = WATCH_DISTANCE
+
+    for i = 1, #targetable_behavior_list do
+        result = obj_get_nearest_object_with_behavior_id(nearest_player_to_object(o), targetable_behavior_list[i])
+
+        if result then
+            local this_dist = dist_between_objects(nearest_player_to_object(o), result)
+            if this_dist < closest_dist then
+                closest_dist = this_dist
+                closest = result
+            end
+        end
+    end
+
+    return closest
+end
+
+function bhv_gadget_aim(o)
+    local target = find_nearest_watch_target(o)
+    local m = nearest_mario_state_to_object(o)
+
+    if last_target ~= target then
+        last_target = target
+        bruh_scale = 1.0
+        play_sound(SOUND_GENERAL_UNKNOWN3_2, gGlobalSoundSource)
+    end
+
+    if target then
+        -- vec3f_copy(o.oPosVec, target.oPosVec)
+        o.oPosX = target.oPosX
+        o.oPosY = target.oPosY
+        o.oPosZ = target.oPosZ
+        cur_obj_unhide()
+        cur_obj_scale(bruh_scale + 1.0)
+        bruh_scale = bruh_scale * 0.9
+        if (m.controller.buttonPressed & L_TRIG) ~= 0 then
+            local laser = spawn_object2(m.marioObj, MODEL_F_LASER, bhvFLaser)
+            laser.oPosX, laser.oPosY, laser.oPosZ = get_hand_foot_pos_x(m, 0), get_hand_foot_pos_y(m, 0),
+                get_hand_foot_pos_z(m, 0)
+            laser.oHomeX = target.oPosX
+            laser.oHomeY = target.oPosY
+            laser.oHomeZ = target.oPosZ
+
+            local behavior = get_id_from_behavior(target.behavior)
+
+            if behavior == (id_bhvBreakableBox) then
+                spawn_object(target, E_MODEL_EXPLOSION, id_bhvExplosion)
+                target.oAction = 2
+                spawn_mist_particles()
+                spawn_triangle_break_particles(30, 0x8a, 3.0, 4)
+                obj_mark_for_deletion(target)
+            elseif behavior == (id_bhvBreakableBoxSmall) then
+                spawn_object(target, E_MODEL_EXPLOSION, id_bhvExplosion)
+                target.oForwardVel = 30.0
+                target.oMoveAngleYaw = m.faceAngle.y
+            elseif behavior == (id_bhvFloorSwitchGrills)
+                or behavior == (id_bhvFloorSwitchAnimatesObject)
+                or behavior == (id_bhvFloorSwitchHardcodedModel)
+                or behavior == (id_bhvFloorSwitchHiddenObjects) then
+                target.oAction = PURPLE_SWITCH_ACT_PRESSED
+            elseif behavior == (id_bhvExclamationBox) then
+                if target.oAction == 2 then
+                    target.oAction = 4
+                end
+            elseif behavior == (id_bhvBlueCoinSwitch) then
+                if target.oAction == BLUE_COIN_SWITCH_ACT_IDLE then
+                    target.oAction = BLUE_COIN_SWITCH_ACT_RECEDING
+                    target.oVelY = -20.0
+                    target.oGravity = 0.0
+                    cur_obj_play_sound_2(SOUND_GENERAL_SWITCH_DOOR_OPEN)
+                end
+            elseif behavior == (id_bhvMessagePanel)
+                or behavior == (id_bhvSignOnWall) then
+                m.usedObj = target
+                set_mario_action(m, ACT_READING_SIGN, 0)
+            elseif behavior == (bhvStarPieceSwitch) then
+                if target.oAction == BLUE_COIN_SWITCH_ACT_IDLE then
+                    target.oAction = BLUE_COIN_SWITCH_ACT_RECEDING
+                    target.oVelY = -20.0
+                    target.oGravity = 0.0
+                    star_pieces_got = 0
+                    cur_obj_play_sound_2(SOUND_GENERAL_SWITCH_DOOR_OPEN)
+                end
+                --[[elseif behavior == (bhvKeypad) then
+                gMarioState.keypad_id = target.oBehParams2ndByte
+                spawn_object(target, MODEL_EXPLOSION, bhvExplosion)
+                mark_obj_for_deletion(target)
+            elseif behavior == (bhvGMarxDoor) then
+                spawn_object(target, MODEL_EXPLOSION, bhvExplosionVisual)
+                mark_obj_for_deletion(target)
+            elseif behavior == (bhvWoodenLever) then
+                if target.oAction == 0 then
+                    target.oAction = 1
+                end]] --TODO
+            elseif behavior == (bhvPaintGun) then
+                if target.oAction == 0 then
+                    target.oAction = target.oAction + 1
+                    target.oAnimState = 0
+                end
+                --[[ elseif behavior == (bhvFTrinket) then
+                trinkets_shot_f = trinkets_shot_f + 1
+                cur_obj_play_sound_2(SOUND_GENERAL_BOWSER_KEY_LAND)
+                spawn_object(target, MODEL_EXPLOSION, bhvExplosionVisual)
+                mark_obj_for_deletion(target)
+
+                if trinkets_shot_f == 3 then
+                    spawn_default_star(-1832, 484, 2022)
+                end
+            elseif behavior == (bhvFblastwall) then
+                if target.oAction == 0 then
+                    target.header.gfx.sharedChild = gLoadedGraphNodes[MODEL_BLASTWALL_2]
+                    target.collisionData = (blastwall2_collision)
+                    target.oAction = 1
+                end]] --TODO
+            end
+        end
+    else
+        cur_obj_hide()
+        bruh_scale = 1.0
+    end
+end
+
+function bhv_f_laser(o)
+    local m = nearest_mario_state_to_object(o)
+    local origin = { get_hand_foot_pos_x(m, 0), get_hand_foot_pos_y(m, 0),
+        get_hand_foot_pos_z(m, 0) }
+    local hitpos = { o.oHomeX, o.oHomeY, o.oHomeZ }
+
+    local dir = {
+        hitpos[1] - origin[1],
+        hitpos[2] - origin[2],
+        hitpos[3] - origin[3]
+    }
+
+    local length = math.sqrt(dir[1] ^ 2 + dir[2] ^ 2 + dir[3] ^ 2)
+    o.header.gfx.scale.z = length / 100.0
+
+    local a = hitpos[1] - o.oPosX
+    local b = hitpos[3] - o.oPosZ
+
+    o.oFaceAngleYaw = atan2s(b, a)
+    o.oFaceAnglePitch = atan2s(math.sqrt(a * a + b * b), origin[2] - hitpos[2])
+
+    if o.oTimer > 1 then
         obj_mark_for_deletion(o)
     end
 end

@@ -223,6 +223,15 @@ local function ability_functions_update(m)
                 end
             end
         end
+
+        if (using_ability(m, ABILITY_GADGET_WATCH)) then
+            local aim = m.marioObj.oBooParentBigBoo
+            if (not aim) then
+                m.marioObj.oBooParentBigBoo = spawn_object2(m.marioObj, MODEL_WATCH_AIM, bhvGadgetAim);
+            end
+        else
+            --no more gadget watch
+        end
     end
 
     if m.action ~= ACT_SQUID then
@@ -258,6 +267,15 @@ local function ability_functions_update(m)
                     GRAPH_RENDER_INVISIBLE
                     --make_mario_visible_again_after_this_frame = true]]
             end
+        end
+    end
+
+    if not (using_ability(m, ABILITY_GADGET_WATCH)) then
+        local aim = m.marioObj.oBooParentBigBoo
+
+        if (aim) then
+            obj_mark_for_deletion(aim);
+            m.marioObj.oBooParentBigBoo=nil
         end
     end
 end

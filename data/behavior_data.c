@@ -608,6 +608,27 @@ const BehaviorScript bhvCheckpointFlag[] = {
     END_LOOP(),
 };
 
+const BehaviorScript bhvFLaser[] = {
+    BEGIN(OBJ_LIST_LEVEL),
+    ID(id_bhvNewId),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
+    CALL_NATIVE(bhv_star_piece_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_f_laser),
+    END_LOOP(),
+};
+
+const BehaviorScript bhvGadgetAim[] = {
+    BEGIN(OBJ_LIST_GENACTOR),
+    ID(id_bhvNewId),
+    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
+    BILLBOARD(),
+    CALL_NATIVE(bhv_star_piece_init),
+    BEGIN_LOOP(),
+        CALL_NATIVE(bhv_gadget_aim),
+    END_LOOP(),
+};
+
 /* these are behavior functions from behavior_data.c in mario in the multiverse
 extern void bhv_hub_platform_loop(void);
 
@@ -1733,15 +1754,6 @@ const BehaviorScript bhvE_PushObj[] = {
 /* GROUP E END *\
 
 /* GROUP F START *\
-const BehaviorScript bhvGadgetAim[] = {
-    BEGIN(OBJ_LIST_GENACTOR),
-    ID(id_bhvNewId),
-    OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
-    BILLBOARD(),
-    BEGIN_LOOP(),
-        CALL_NATIVE(bhv_gadget_aim),
-    END_LOOP(),
-};
 
 const BehaviorScript bhvBriefcase[] = {
     BEGIN(OBJ_LIST_LEVEL),
@@ -2015,14 +2027,7 @@ const BehaviorScript bhvHeliBalls[] = {
 };
 
 extern void bhv_f_laser(void);
-const BehaviorScript bhvFLaser[] = {
-    BEGIN(OBJ_LIST_LEVEL),
-    ID(id_bhvNewId),
-    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
-    BEGIN_LOOP(),
-        CALL_NATIVE(bhv_f_laser),
-    END_LOOP(),
-};
+
 /* GROUP F END *\
 
 /* GROUP H START *\
