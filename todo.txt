@@ -55,10 +55,11 @@ Area 3:
 Course 7: Beyond the cursed Pizza
 
 Area 1-5:
-- Haven't been able to see anything cuz of 6
+- Area 1 just doesn't load, guessing due to Mario Start cmd, but i have no clue if the hook to it is transferring right.
 
 Area 6:
-- Silent crash, working on it rn
+- NPC's aren't in but everything works
+- I lied still no zbuffer but still everything "works"
 
 Area 7:
 - Doesn't exist cause no boss yet
