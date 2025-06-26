@@ -1,5 +1,5 @@
 -- name: \\#0865de\\Mario \\#ffffff\\In The \\#3b348a\\Multiverse
--- description: \\#0865de\\Mario \\#ffffff\\In The \\#3b348a\\Multiverse\\#ffffff\\ is a Collaborative Major Hack brought to you by an all-star team of ROMhackers, each representing a given series through a unique level and ability to make this a journey like no other.\n\nPorted By:\n\\#00ff00\\I'mYourCat\\#FF0000\\2 (Creator)\n\\#dcdcdc\\x\\#00FF00\\Luigi\\#434343\\Gamer\\#dcdcdc\\x (Programmer)\n\\#FFC0CB\\MaiskX3 (Music Porter, Tester)\n\\#105009\\Emeraldsniper (Tester)\n\\#FF004C\\CitraDreamPainter (Tester)\n\\#00FFFF\\WBmarioo (Tester)
+-- description: \\#0865de\\Mario \\#ffffff\\In The \\#3b348a\\Multiverse\\#ffffff\\ is a Collaborative Major Hack brought to you by an all-star team of ROMhackers, each representing a given series through a unique level and ability to make this a journey like no other.\n\nPorted By:\n\\#00ff00\\I'mYourCat\\#FF0000\\2 (Creator)\n\\#dcdcdc\\x\\#00FF00\\Luigi\\#434343\\Gamer\\#dcdcdc\\x (Programmer)\n\\#FFC0CB\\MushJam (Programmer)\n\\#FFC0CB\\MaiskX3 (Music Porter, Tester)\n\\#105009\\Emeraldsniper (Tester)\n\\#FF004C\\CitraDreamPainter (Tester)\n\\#00FFFF\\WBmarioo (Tester)
 -- incompatible: romhack
 -- pausable: false
 
@@ -46,11 +46,9 @@ local function drop_coins_on_death(m)
                 end)
         end
     end
-
-    -- save_file_set_coins()
-    --gSaveFileModified = true
-    --save_file_do_save(gCurrSaveFileNum - 1)
 end
+
+local droppedCoins = false
 
 local function mario_update(m)
     if m.playerIndex == 0 then
@@ -64,7 +62,12 @@ local function mario_update(m)
         m.numLives = 99
 
         if m.action == ACT_FALLING_DEATH_EXIT then
-            drop_coins_on_death(m)
+            if not droppedCoins then
+                drop_coins_on_death(m)
+                droppedCoins = true
+            end
+        else
+            droppedCoins = false
         end
     end
     -- gGlobalSyncTable.coins = 999

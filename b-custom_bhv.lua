@@ -1597,6 +1597,62 @@ function bhv_g_moving_platform_init(o)
     o.oMoveAngleYaw = o.oFaceAngleYaw;
 end
 
+---@param o Object
+function bhv_checkpoint_flag(o)
+    local m = gMarioStates[0]
+    local syncData = gPlayerSyncTable[0]
+    if (o.oBehParams2ndByte == syncData.numCheckpointFlag and gNetworkPlayers[0].currAreaIndex == syncData.areaCheckpointFlag) then
+        -- Am the current checkpoint flag
+        if o.oAnimState ~= 1 then
+            o.oAnimState = 1
+
+            -- Move the death warp to me
+            local dw = cur_obj_nearest_object_with_behavior(get_behavior_from_id(id_bhvDeathWarp))
+            if dw then
+                dw.oPosX = o.oPosX + sins(o.oFaceAngleYaw) * 101.0
+                dw.oPosY = o.oPosY + 150.0
+                dw.oPosZ = o.oPosZ + coss(o.oFaceAngleYaw) * 101.0
+                syncData.vecCheckpointFlagv1 = dw.oPosX
+                syncData.vecCheckpointFlagv2 = dw.oPosY
+                syncData.vecCheckpointFlagv3 = dw.oPosZ
+            end
+        end
+    else
+        -- Not the current checkpoint flag
+        o.oAnimState = 0
+        if o.oDistanceToMario < 100.0 then
+            syncData.numCheckpointFlag = o.oBehParams2ndByte
+            syncData.areaCheckpointFlag = gNetworkPlayers[0].currAreaIndex
+            o.oAnimState = 1
+            o.oVelY = 4000.0
+            o.oTimer = 0
+
+            play_sound(SOUND_GENERAL2_RIGHT_ANSWER, m.marioObj.header.gfx.cameraToObject)
+
+            -- Move the death warp to me
+            local dw = cur_obj_nearest_object_with_behavior(get_behavior_from_id(id_bhvDeathWarp))
+            if dw then
+                dw.oPosX = o.oPosX + sins(o.oFaceAngleYaw) * 101.0
+                dw.oPosY = o.oPosY + 150.0
+                dw.oPosZ = o.oPosZ + coss(o.oFaceAngleYaw) * 101.0
+                syncData.vecCheckpointFlagv1 = dw.oPosX
+                syncData.vecCheckpointFlagv2 = dw.oPosY
+                syncData.vecCheckpointFlagv3 = dw.oPosZ
+            end
+        end
+    end
+
+    if o.oVelY > 2000.0 then
+        local sparkleObj = spawn_object(o, E_MODEL_SPARKLES, id_bhvCoinSparkles)
+        sparkleObj.oPosX = sparkleObj.oPosX + random_float() * 50.0 - 25.0
+        sparkleObj.oPosY = sparkleObj.oPosY + random_float() * 100.0
+        sparkleObj.oPosZ = sparkleObj.oPosZ + random_float() * 50.0 - 25.0
+    end
+
+    o.oFaceAngleRoll = sins(o.oTimer * 0x900) * o.oVelY
+    o.oVelY = o.oVelY * 0.97
+end
+
 function bhv_g_moving_platform_loop(o)
     o.oForwardVel = o.oBehParams2ndByte * sins(o.oTimer * 0x88 * ((o.oBehParams >> 24) & 0xff));
     cur_obj_move_xz_using_fvel_and_yaw();

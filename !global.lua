@@ -237,6 +237,7 @@ abstr_util_3             = TEXT_ABILITY_UTIL_3
 
 -- Behavior
 MODEL_LEVEL_PIPE                = smlua_model_util_get_id("level_pipe_geo")
+MODEL_CHECKPOINT_FLAG           = smlua_model_util_get_id("checkpoint_flag_geo")
 MODEL_G_BANANA_DEE              = smlua_model_util_get_id("g_banana_dee_geo")
 MODEL_G_SPRING                  = smlua_model_util_get_id("g_spring_geo")
 MODEL_G_WADDLE_DEE              = smlua_model_util_get_id("g_waddle_dee_geo")
@@ -663,6 +664,7 @@ for i = 0, (MAX_PLAYERS - 1) do
     -- PlayerSyncTable --
 
     gPlayerSyncTable[i].abilityId = 0
+
     gPlayerSyncTable[i].rotAngle = 0
 
     gPlayerSyncTable[i].sqwall_normalx = 0
@@ -674,6 +676,12 @@ for i = 0, (MAX_PLAYERS - 1) do
 
     gPlayerSyncTable[i].aku_invincibility = 0
     gPlayerSyncTable[i].aku_recharge = 300
+
+    gPlayerSyncTable[i].numCheckpointFlag = 0
+    gPlayerSyncTable[i].areaCheckpointFlag = 0
+    gPlayerSyncTable[i].vecCheckpointFlagv1 = 0
+    gPlayerSyncTable[i].vecCheckpointFlagv2 = 0
+    gPlayerSyncTable[i].vecCheckpointFlagv3 = 0
 end
 
 local courseToLevel = {

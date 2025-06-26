@@ -4,11 +4,9 @@ Area 2 (OP Segment after opening cutscene):
 - Music isn't syncing properly upon first entry sometimes
 
 Area 3:
-- Checkpoint flags missing
 - Skybox is weird? (I might be tripping)
 
 Area 4:
-- Checkpoint flags missing
 - Pipe to warp back to Area 3 isn't there
 - Hidden buttons for one of the stars isn't implemented yet
 - Grate that blocks entry to Marx fight not implemented
