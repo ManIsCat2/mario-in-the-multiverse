@@ -52,6 +52,17 @@ Area 2:
 Area 3:
 - Doesn't exist cause no boss yet
 
+Course 7: Beyond the cursed Pizza
+
+Area 1-5:
+- Haven't been able to see anything cuz of 6
+
+Area 6:
+- Silent crash, working on it rn
+
+Area 7:
+- Doesn't exist cause no boss yet
+
 Course 12: New N-Sanity Island
 
 Area 1:

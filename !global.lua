@@ -316,6 +316,7 @@ SOUND_ABILITY_AKU_AKU                = audio_stream_load("ability_aku.aiff")
 -- Floor
 SURFACE_SQUID_INK                    = SURFACE_TRAPDOOR + 16
 SURFACE_TOXIC_INK                    = SURFACE_TRAPDOOR + 32
+SURFACE_SEMISOLID                    = SURFACE_TRAPDOOR + 48 -- call 303 in editor
 
 CAMERA_MODE_PAINT_GUN                = CAMERA_MODE_ROM_HACK + 0x01
 
@@ -378,7 +379,7 @@ mitm_levels                              = {
     --[[I]] { name = "MUSHROOM HAVOC", author = "Drahnokks",                     author_abridged = "Drahnokks",       level = LEVEL_I,             course = COURSE_CCM,   star_requirement = 5,  start_area = 1,        return_id = 23, star_count = 8, dream_data = mitmdd_i },
     --[[H]] { name = "OPPORTUNITY",  author = "joopii",                          author_abridged = "joopii",          level = LEVEL_H,             course = COURSE_BBH,   star_requirement = 10, start_area = 1,        return_id = 24, star_count = 8, dream_data = mitmdd_h },
     --[[B]] { name = "BIOSHOCK RAPTURE", author = "furyiousfight",               author_abridged = "furyiousfight",   level = LEVEL_B,             course = COURSE_HMC,   star_requirement = 15, start_area = 1,        return_id = 25, star_count = 8, dream_data = mitmdd_b },
-    --[[L]] { name = "BEYOND THE CURSED PIZZA", author = "luigiman0640",         author_abridged = "luigiman0640",    level = LEVEL_L,             course = COURSE_LLL,   star_requirement = 20, start_area = 6,        return_id = 26, star_count = 8, dream_data = mitmdd_l },
+    --[[L]] { name = "BEYOND THE CURSED PIZZA", author = "luigiman0640",         author_abridged = "luigiman0640",    level = LEVEL_L,             course = COURSE_LLL,   star_requirement = 20, start_area = 6, --[[Start area 6 is bugged rn trying to figure out why]] return_id = 26, star_count = 8, dream_data = mitmdd_l },
     --[[K]] { name = "KATANA MARIO NEW MECCA", author = "KeyBlader, Ability by: axollyon", author_abridged = "KeyBlader & Co.", level = LEVEL_K,   course = COURSE_SSL,   star_requirement = 20, start_area = 2,        return_id = 27, star_count = 8, dream_data = mitmdd_k },
     --[[E]] { name = "DOOM",         author = "Dorrieal",                        author_abridged = "Dorrieal",        level = LEVEL_E,             course = COURSE_DDD,   star_requirement = 30, start_area = 1,        return_id = 28, star_count = 8, dream_data = mitmdd_e },
     --[[F]] { name = "FROM RUSSIA WITH LOVE", author = "Aeza",                   author_abridged = "Aeza",            level = LEVEL_F,             course = COURSE_SL,    star_requirement = 30, start_area = 1,        return_id = 29, star_count = 8, dream_data = mitmdd_f },
