@@ -11,6 +11,27 @@ local function act_cutscene_controlled(m)
     return 0
 end
 
+local behImmuneToCutter = {
+    bhvKingBobomb,
+    bhvUkiki,
+    bhvBowser,
+    bhvMips,
+    bhvBreakableBoxSmall,
+    bhvJumpingBox,
+    bhvPlum,
+    bhvFdynamite,
+    bhvChuckya,
+}
+
+function is_behavior_immune_to_cutter(behavior)
+    for i = 1, #behImmuneToCutter do
+        if behavior == behImmuneToCutter[i] then
+            return true
+        end
+    end
+    return false
+end
+
 local function act_enter_hub_pipe(m)
     local gPlayer1Controller = m.controller
     set_mario_animation(m, MARIO_ANIM_A_POSE)
