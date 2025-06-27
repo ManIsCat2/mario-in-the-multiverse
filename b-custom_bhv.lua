@@ -3263,6 +3263,18 @@ end
 
 function shock_rocket_quit(obj)
     local m = gMarioStates[network_local_index_from_global(obj.parentObj.globalPlayerIndex)]
+    local o = obj
+    for i = 1, o.numCollidedObjs do
+        local other = o.collidedObjs[i]
+        if other ~= o.parentObj then
+            if other ~= m.marioObj then
+                local sirkibb = get_behavior_from_id(bhvSirKibble)
+                if not (other.parentObj.behavior == sirkibb and other.behavior == sirkibb) then
+                    attack_object(other, 2)
+                end
+            end
+        end
+    end
     obj_mark_for_deletion(obj)
 
     if (m.action & ACT_FLAG_INVULNERABLE) == 0 then
@@ -3399,6 +3411,7 @@ end
 
 function bhv_shock_rocket_init(obj)
     obj.oFlags = obj.oFlags|OBJ_FLAG_ABILITY_CHRONOS_SMOOTH_SLOW
+    network_init_object(obj, true, {"oAction" ,"oTimer", "oPosX", "oPosY", "oPosZ"})
 end
 
 function bhv_shock_rocket_loop(obj)
