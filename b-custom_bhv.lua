@@ -3096,7 +3096,10 @@ function bhv_gadget_aim(o)
         cur_obj_scale(bruh_scale + 1.0)
         bruh_scale = bruh_scale * 0.9
         if (m.controller.buttonPressed & L_TRIG) ~= 0 then
-            local laser = spawn_object2(m.marioObj, MODEL_F_LASER, bhvFLaser)
+            local laser
+            if should_object_spawn() then
+                laser = spawn_object2(m.marioObj, MODEL_F_LASER, bhvFLaser)
+            end
             laser.oPosX, laser.oPosY, laser.oPosZ = get_hand_foot_pos_x(m, 0), get_hand_foot_pos_y(m, 0),
                 get_hand_foot_pos_z(m, 0)
             laser.oHomeX = target.oPosX
@@ -3206,4 +3209,209 @@ function bhv_f_laser(o)
     if o.oTimer > 1 then
         obj_mark_for_deletion(o)
     end
+end
+
+SHOCK_ROCKET_ACT_ARMED               = 0x0
+SHOCK_ROCKET_ACT_MOVE                = 0x1
+SHOCK_ROCKET_ACT_WAIT_BEFORE_QUITING = 0x2
+
+local DELAY                          = 30
+
+-- Define shock rocket hitbox
+sShockRocketHitbox                   = {
+    interactType = 0,
+    downOffset = 50,
+    damageOrCoinValue = 0,
+    health = 1,
+    numLootCoins = 0,
+    radius = 100,
+    height = 100,
+    hurtboxRadius = 100,
+    hurtboxHeight = 100,
+}
+
+function shock_rocket_stick_control(obj)
+    local m = gMarioStates[network_local_index_from_global(obj.parentObj.globalPlayerIndex)]
+    local stickX = m.controller.rawStickX
+    local stickY = -m.controller.rawStickY
+
+    --[[local config = gSaveBuffer.menuData.config[SETTINGS_ROCKET_CONTROLS]
+    if config == 1 then
+        stickX = -stickX
+    elseif config == 2 then
+        stickY = -stickY
+    end
+]] --TODO
+    if math.abs(stickX) < 10 then stickX = 0 end
+    if math.abs(stickY) < 10 then stickY = 0 end
+
+    local slow = 1 --ability_chronos_current_slow_factor() todo
+
+    if find_water_level(obj.oPosX, obj.oPosZ) > obj.oPosY then
+        obj.oMoveAngleYaw = obj.oMoveAngleYaw - 5 * stickX * slow
+        obj.oMoveAnglePitch = obj.oMoveAnglePitch - 5 * stickY * slow
+        obj.oForwardVel = 20
+    else
+        obj.oMoveAngleYaw = obj.oMoveAngleYaw - 10 * stickX * slow
+        obj.oMoveAnglePitch = obj.oMoveAnglePitch - 10 * stickY * slow
+        obj.oForwardVel = 30
+    end
+
+    if obj.oMoveAnglePitch > 0x3FF0 then obj.oMoveAnglePitch = 0x3FF0 end
+    if obj.oMoveAnglePitch < -0x3FF0 then obj.oMoveAnglePitch = -0x3FF0 end
+end
+
+function shock_rocket_quit(obj)
+    local m = gMarioStates[network_local_index_from_global(obj.parentObj.globalPlayerIndex)]
+    obj_mark_for_deletion(obj)
+
+    if (m.action & ACT_FLAG_INVULNERABLE) == 0 then
+        m.actionState = 2
+    end
+
+    if m == gMarioStates[0] then
+        camera_unfreeze()
+        m.marioObj.oBooParentBigBoo=nil
+    end
+
+    -- gLakituState.mode = obj.oPreviousLakituCamMode
+end
+
+---@param obj Object
+function shock_rocket_armed(obj)
+    local m = gMarioStates[network_local_index_from_global(obj.parentObj.globalPlayerIndex)]
+    shock_rocket_stick_control(obj)
+    --obj_set_model(gMarioStates[0].marioObj, MODEL_NONE)
+
+    obj.oPosX = m.pos.x
+    obj.oPosY = m.pos.y + 100
+    obj.oPosZ = m.pos.z
+
+    if obj.oTimer == 0 then
+        m.usedObj = obj
+        -- obj.oPreviousLakituCamMode = gLakituState.mode
+        --  gLakituState.mode = CAMERA_MODE_SHOCK_ROCKET
+    end
+
+    if m.controller.buttonPressed & B_BUTTON ~= 0 then
+        cur_obj_play_sound_2(SOUND_OBJ_POUNDING_CANNON)
+        cur_obj_shake_screen(SHAKE_POS_SMALL)
+        obj_set_hitbox(obj, sShockRocketHitbox)
+        obj.oAction = obj.oAction + 1
+    end
+
+    if (m.action & ACT_FLAG_INVULNERABLE) ~= 0 then
+        obj.oAction = 2
+    end
+
+    if obj.oTimer > 5 and (m.action ~= ACT_IDLE or m.controller.buttonPressed & L_TRIG ~= 0) then
+        shock_rocket_quit(obj)
+    end
+end
+
+function shock_rocket_move(obj)
+    if obj.oTimer == 5 then
+        obj.oInteractType = INTERACT_DAMAGE
+    end
+    local m = gMarioStates[network_local_index_from_global(obj.parentObj.globalPlayerIndex)]
+    obj_attack_collided_from_other_object(obj)
+    cur_obj_update_floor_and_walls()
+    play_sound(SOUND_AIR_BOBOMB_LIT_FUSE, gGlobalSoundSource)
+
+    shock_rocket_stick_control(obj)
+    local slow = 1 --ability_chronos_current_slow_factor() todo
+
+    obj.oPosX = obj.oPosX + sins(obj.oMoveAngleYaw) * coss(obj.oMoveAnglePitch) * obj.oForwardVel * slow
+    obj.oPosY = obj.oPosY - sins(obj.oMoveAnglePitch) * obj.oForwardVel * slow
+    obj.oPosZ = obj.oPosZ + coss(obj.oMoveAngleYaw) * coss(obj.oMoveAnglePitch) * obj.oForwardVel * slow
+
+    obj.oMoveAngleRoll = sins(obj.oTimer * 0x1000) * degrees_to_sm64(1.0)
+
+    if find_water_level(obj.oPosX, obj.oPosZ) > obj.oPosY then
+        spawn_object(obj, E_MODEL_BUBBLE, bhvRocketSmoke)
+    else
+        spawn_object(obj, E_MODEL_SMOKE, bhvRocketSmoke)
+    end
+
+    local ceilHeight = find_ceil_height(obj.oPosX, obj.oPosY, obj.oPosZ)
+
+    if obj.oTimer > 300
+        or (obj.oMoveFlags & OBJ_MOVE_HIT_WALL ~= 0)
+        or (obj.oPosY - obj.oFloorHeight < 35)
+        or (ceilHeight - obj.oPosY < 25)
+        or (obj.oInteractStatus & INT_STATUS_INTERACTED ~= 0)
+        or (obj.numCollidedObjs > 0 and obj.oInteractType == INTERACT_DAMAGE)
+        or (m.controller.buttonPressed & B_BUTTON ~= 0)
+    then
+        obj.oAction = obj.oAction + 1
+    end
+
+    set_mario_action(m, ACT_IDLE, 0);
+
+    if m.action ~= ACT_IDLE then
+        -- spawn_object(obj, E_MODEL_EXPLOSION, id_bhvExplosion)
+        -- shock_rocket_quit(obj)
+    end
+
+    if m == gMarioStates[0] then
+        camera_freeze()
+        local yaw = obj.oMoveAngleYaw;
+        local pitch = obj.oMoveAnglePitch;
+        local cossPitch = coss(pitch);
+        local camDecrement;
+        if obj.oAction == SHOCK_ROCKET_ACT_ARMED then
+            camDecrement = 150; --iming zoom
+        elseif obj.oAction == SHOCK_ROCKET_ACT_MOVE then
+            camDecrement = 100; --omving zoom
+        elseif obj.oAction == SHOCK_ROCKET_ACT_WAIT_BEFORE_QUITING then
+            camDecrement = 400; --uuiting zoom
+        end
+
+
+        local camOffset = {
+            x = (sins(yaw) * cossPitch) *
+                ((obj.oForwardVel --[[* ability_chronos_current_slow_factor()]]) - camDecrement),
+            y = (sins(pitch)) * ((obj.oForwardVel --[[* ability_chronos_current_slow_factor()]]) + camDecrement),
+            z = (coss(yaw) * cossPitch) *
+                ((obj.oForwardVel --[[* ability_chronos_current_slow_factor()]]) - camDecrement)
+        };
+        local newPos={x=0,y=0,z=0};
+
+        vec3f_copy(gLakituState.focus, { x = obj.oPosX, y = obj.oPosY, z = obj.oPosZ });
+
+        vec3f_copy(newPos, gLakituState.focus);
+        vec3f_add(newPos, camOffset);
+        vec3f_copy(gLakituState.pos, newPos);
+    end
+end
+
+function shock_rocket_wait_before_quitting(obj)
+    if obj.oTimer == 0 then
+        spawn_object(obj, E_MODEL_EXPLOSION, id_bhvExplosion)
+        cur_obj_disable()
+        obj.oForwardVel = 0
+    end
+
+    if obj.oTimer == DELAY then
+        shock_rocket_quit(obj)
+    end
+end
+
+function bhv_shock_rocket_init(obj)
+    obj.oFlags = obj.oFlags|OBJ_FLAG_ABILITY_CHRONOS_SMOOTH_SLOW
+end
+
+function bhv_shock_rocket_loop(obj)
+    --  djui_chat_message_create("Ec")
+    if obj.oAction == SHOCK_ROCKET_ACT_ARMED then
+        shock_rocket_armed(obj)
+    elseif obj.oAction == SHOCK_ROCKET_ACT_MOVE then
+        shock_rocket_move(obj)
+    elseif obj.oAction == SHOCK_ROCKET_ACT_WAIT_BEFORE_QUITING then
+        shock_rocket_wait_before_quitting(obj)
+    end
+end
+
+function bhv_rocket_smoke_init(void)
+    cur_obj_scale((random_float() * 2 + 2.0) / 15);
 end

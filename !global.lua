@@ -17,6 +17,7 @@ TEX_METER8               = get_texture_info("meter_8_hp_circle_ia8")
 TEX_METER_CIRCLE         = get_texture_info("meter_bg_circle_transparent_ia8")
 TEX_HEART_METER          = get_texture_info("meter_hp_heart_ia8")
 TEX_AKU_METER            = get_texture_info("meter_aku_stars_ia8")
+TEX_ROCKET_METER         = get_texture_info("meter_rocket_rocket_ia8")
 ability_util             = { str = nil, display = false, seq = false }
 
 -- Defining NULL
@@ -286,6 +287,7 @@ MODEL_CRANE_HEAD                   = smlua_model_util_get_id("crane_head_geo")
 MODEL_CRANE                        = smlua_model_util_get_id("crane_geo")
 MODEL_F_LASER                      = smlua_model_util_get_id("f_laser_geo")
 MODEL_WATCH_AIM                    = smlua_model_util_get_id("aim_f_geo")
+MODEL_SHOCK_ROCKET                 = smlua_model_util_get_id("shock_rocket_geo")
 
 BP3_ATTACH_ROPE                    = 0xF0
 
@@ -353,26 +355,26 @@ function GET_BPARAM34(behParams) return GET_BPARAMS((behParams), 3, 2) end
 
 -- Dream Data
 
-mitmdd_a                                 = { ability_lock = { ABILITY_DEFAULT, ABILITY_MARBLE, ABILITY_NONE, ABILITY_NONE }, dream_star_ct = 5 } ---@type mitm_dream_data
-mitmdd_b                                 = { ability_lock = { ABILITY_DEFAULT, ABILITY_UTIL_MIRROR, ABILITY_BIG_DADDY, ABILITY_NONE }, dream_star_ct = 6 } ---@type mitm_dream_data
-mitmdd_c                                 = { ability_lock = { ABILITY_DEFAULT, ABILITY_PHASEWALK, ABILITY_NONE, ABILITY_NONE }, dream_star_ct = 5 } ---@type mitm_dream_data
-mitmdd_d                                 = { ability_lock = { ABILITY_DEFAULT, ABILITY_UTIL_MIRROR, ABILITY_AKU, ABILITY_NONE }, dream_star_ct = 7 } ---@type mitm_dream_data
-mitmdd_e                                 = { ability_lock = { ABILITY_DEFAULT, ABILITY_UTIL_MIRROR, ABILITY_E_SHOTGUN, ABILITY_NONE }, dream_star_ct = 8 } ---@type mitm_dream_data
-mitmdd_f                                 = { ability_lock = { ABILITY_DEFAULT, ABILITY_GADGET_WATCH, ABILITY_PHASEWALK, ABILITY_NONE }, dream_star_ct = 6 } ---@type mitm_dream_data
-mitmdd_g                                 = { ability_lock = { ABILITY_DEFAULT, ABILITY_UTIL_MIRROR, ABILITY_NONE, ABILITY_NONE }, dream_star_ct = 7 } ---@type mitm_dream_data
-mitmdd_h                                 = { ability_lock = { ABILITY_DEFAULT, ABILITY_UTIL_MIRROR, ABILITY_PHASEWALK, ABILITY_NONE }, dream_star_ct = 7 } ---@type mitm_dream_data
-mitmdd_i                                 = { ability_lock = { ABILITY_DEFAULT, ABILITY_CUTTER, ABILITY_NONE, ABILITY_NONE }, dream_star_ct = 7 } ---@type mitm_dream_data
-mitmdd_j                                 = { ability_lock = { ABILITY_DEFAULT, ABILITY_BUBBLE_HAT, ABILITY_SQUID, ABILITY_NONE }, dream_star_ct = 8 } ---@type mitm_dream_data
-mitmdd_k                                 = { ability_lock = { ABILITY_DEFAULT, ABILITY_UTIL_MIRROR, ABILITY_CHRONOS, ABILITY_NONE }, dream_star_ct = 7 } ---@type mitm_dream_data
-mitmdd_l                                 = { ability_lock = { ABILITY_DEFAULT, ABILITY_KNIGHT, ABILITY_NONE, ABILITY_NONE }, dream_star_ct = 4 } ---@type mitm_dream_data
-mitmdd_m                                 = { ability_lock = { ABILITY_DEFAULT, ABILITY_UTIL_MIRROR, ABILITY_PHASEWALK, ABILITY_KNIGHT }, dream_star_ct = 8 } ---@type mitm_dream_data
-mitmdd_n                                 = { ability_lock = { ABILITY_DEFAULT, ABILITY_E_SHOTGUN, ABILITY_BUBBLE_HAT, ABILITY_NONE }, dream_star_ct = 7 } ---@type mitm_dream_data
-mitmdd_o                                 = { ability_lock = { ABILITY_DEFAULT, ABILITY_UTIL_MIRROR, ABILITY_HM_FLY, ABILITY_GADGET_WATCH }, dream_star_ct = 8 } ---@type mitm_dream_data
+mitmdd_a                                     = { ability_lock = { ABILITY_DEFAULT, ABILITY_MARBLE, ABILITY_NONE, ABILITY_NONE }, dream_star_ct = 5 } ---@type mitm_dream_data
+mitmdd_b                                     = { ability_lock = { ABILITY_DEFAULT, ABILITY_UTIL_MIRROR, ABILITY_BIG_DADDY, ABILITY_NONE }, dream_star_ct = 6 } ---@type mitm_dream_data
+mitmdd_c                                     = { ability_lock = { ABILITY_DEFAULT, ABILITY_PHASEWALK, ABILITY_NONE, ABILITY_NONE }, dream_star_ct = 5 } ---@type mitm_dream_data
+mitmdd_d                                     = { ability_lock = { ABILITY_DEFAULT, ABILITY_UTIL_MIRROR, ABILITY_AKU, ABILITY_NONE }, dream_star_ct = 7 } ---@type mitm_dream_data
+mitmdd_e                                     = { ability_lock = { ABILITY_DEFAULT, ABILITY_UTIL_MIRROR, ABILITY_E_SHOTGUN, ABILITY_NONE }, dream_star_ct = 8 } ---@type mitm_dream_data
+mitmdd_f                                     = { ability_lock = { ABILITY_DEFAULT, ABILITY_GADGET_WATCH, ABILITY_PHASEWALK, ABILITY_NONE }, dream_star_ct = 6 } ---@type mitm_dream_data
+mitmdd_g                                     = { ability_lock = { ABILITY_DEFAULT, ABILITY_UTIL_MIRROR, ABILITY_NONE, ABILITY_NONE }, dream_star_ct = 7 } ---@type mitm_dream_data
+mitmdd_h                                     = { ability_lock = { ABILITY_DEFAULT, ABILITY_UTIL_MIRROR, ABILITY_PHASEWALK, ABILITY_NONE }, dream_star_ct = 7 } ---@type mitm_dream_data
+mitmdd_i                                     = { ability_lock = { ABILITY_DEFAULT, ABILITY_CUTTER, ABILITY_NONE, ABILITY_NONE }, dream_star_ct = 7 } ---@type mitm_dream_data
+mitmdd_j                                     = { ability_lock = { ABILITY_DEFAULT, ABILITY_BUBBLE_HAT, ABILITY_SQUID, ABILITY_NONE }, dream_star_ct = 8 } ---@type mitm_dream_data
+mitmdd_k                                     = { ability_lock = { ABILITY_DEFAULT, ABILITY_UTIL_MIRROR, ABILITY_CHRONOS, ABILITY_NONE }, dream_star_ct = 7 } ---@type mitm_dream_data
+mitmdd_l                                     = { ability_lock = { ABILITY_DEFAULT, ABILITY_KNIGHT, ABILITY_NONE, ABILITY_NONE }, dream_star_ct = 4 } ---@type mitm_dream_data
+mitmdd_m                                     = { ability_lock = { ABILITY_DEFAULT, ABILITY_UTIL_MIRROR, ABILITY_PHASEWALK, ABILITY_KNIGHT }, dream_star_ct = 8 } ---@type mitm_dream_data
+mitmdd_n                                     = { ability_lock = { ABILITY_DEFAULT, ABILITY_E_SHOTGUN, ABILITY_BUBBLE_HAT, ABILITY_NONE }, dream_star_ct = 7 } ---@type mitm_dream_data
+mitmdd_o                                     = { ability_lock = { ABILITY_DEFAULT, ABILITY_UTIL_MIRROR, ABILITY_HM_FLY, ABILITY_GADGET_WATCH }, dream_star_ct = 8 } ---@type mitm_dream_data
 
 --In course order, not alphabetical!
 --Only mess with --[[ Level ]] entry, everything else is pre-configured
 ---@type mitm_level_data[]
-mitm_levels                              = {
+mitm_levels                                  = {
     --[[ Name, Author(s)]]
     --[[Level     StarFlags     StarReq  StartArea  ReturnWarp  StarCt DreamData]]
     [0] = { name = "MARIO SUPER STAR ULTRA", author = "CowQuack", author_abridged = "CowQuack", level = LEVEL_G, course = COURSE_BOB, star_requirement = 0, start_area = 3, return_id = 20, star_count = 8, dream_data = mitmdd_g },
@@ -398,20 +400,21 @@ mitm_levels                              = {
     --[[BB]] { name = "Big Blue",    author = "BroDute",                         author_abridged = "BroDute",         level = NULL,                course = COURSE_WMOTR, star_requirement = 0,  start_area = 0,        return_id = 36, star_count = 1, dream_data = NULL },
 };
 
-mario_right_hand_closed                  = gfx_get_from_name("mario_right_hand_closed")
-local cutter_hat_Circle_mesh_layer_1     = gfx_get_from_name("cutter_hat_Circle_mesh_layer_1")
-local net_hand_2_hand_mesh               = gfx_get_from_name("net_hand_2_hand_mesh")
-local bubble_hat_bhat_mesh               = gfx_get_from_name("bubble_hat_bhat_mesh")
-cutter_hand_right_hand_open_mesh_layer_1 = gfx_get_from_name("cutter_hand_right_hand_open_mesh_layer_1")
-bubblehat_hand_hand_mesh                 = gfx_get_from_name("bubblehat_hand_hand_mesh")
-gfx_empty                                = gfx_get_from_name("GFXEMPTY")
-local squid_hat_lunette_mesh             = gfx_get_from_name("squid_hat_lunette_mesh")
-local ability_d_mask_hat_mesh            = gfx_get_from_name("ability_d_mask_hat_mesh")
-local hand_f_hand_mesh                   = gfx_get_from_name("hand_f_hand_mesh")
-local hat_f_hat_mesh                     = gfx_get_from_name("hat_f_hat_mesh")
+mario_right_hand_closed                      = gfx_get_from_name("mario_right_hand_closed")
+local cutter_hat_Circle_mesh_layer_1         = gfx_get_from_name("cutter_hat_Circle_mesh_layer_1")
+local net_hand_2_hand_mesh                   = gfx_get_from_name("net_hand_2_hand_mesh")
+local bubble_hat_bhat_mesh                   = gfx_get_from_name("bubble_hat_bhat_mesh")
+cutter_hand_right_hand_open_mesh_layer_1     = gfx_get_from_name("cutter_hand_right_hand_open_mesh_layer_1")
+bubblehat_hand_hand_mesh                     = gfx_get_from_name("bubblehat_hand_hand_mesh")
+gfx_empty                                    = gfx_get_from_name("GFXEMPTY")
+local squid_hat_lunette_mesh                 = gfx_get_from_name("squid_hat_lunette_mesh")
+local ability_d_mask_hat_mesh                = gfx_get_from_name("ability_d_mask_hat_mesh")
+local hand_f_hand_mesh                       = gfx_get_from_name("hand_f_hand_mesh")
+local hat_f_hat_mesh                         = gfx_get_from_name("hat_f_hat_mesh")
+local rocket_hand_RaymanMissile_mesh_layer_1 = gfx_get_from_name("rocket_hand_RaymanMissile_mesh_layer_1")
 
 -- Ability struct
-ability_struct                           = {
+ability_struct                               = {
     --           HAND DISPLAY LIST        HAT DISPLAY LIST     MARIO MODEL ID     STRING
     --Default
     [0] = { hand = mario_right_hand_closed, hat = gfx_empty, model_id = nil, string = abstr_def },
@@ -454,7 +457,7 @@ ability_struct                           = {
     { hand = mirror_hand_hand_mesh,                  hat = gfx_empty,                      model_id = nil,                string = abstr_util_3 },
 }
 
-title_card_data                          = {
+title_card_data                              = {
     [0] = get_texture_info("custom_titlecard_G.rgba16")
     ,
     get_texture_info("custom_titlecard_A.rgba16")
@@ -486,7 +489,7 @@ title_card_data                          = {
     get_texture_info("custom_titlecard_M.rgba16")
 };
 
-ability_images                           = {
+ability_images                               = {
     [0] = { --[[Default]]
         get_texture_info("custom_ability_default.rgba16")
     },
@@ -555,20 +558,20 @@ ability_images                           = {
     }
 };
 
-METER_STYLE_GENERIC                      = 0
-METER_STYLE_HP                           = 1
-METER_STYLE_BREATH                       = 2
-METER_STYLE_AKU                          = 3
-METER_STYLE_PHASEWALK                    = 4
-METER_STYLE_PHASEWALK_SUPERJUMP          = 5
-METER_STYLE_PHASEWALK_RECHARGE           = 6
-METER_STYLE_ROCKET                       = 7
-METER_STYLE_CHRONOS                      = 8
-METER_STYLE_DASH_BOOSTER                 = 9
-METER_STYLE_AKU_RECHARGE                 = 10
-METER_STYLE_COUNT                        = 11
+METER_STYLE_GENERIC                          = 0
+METER_STYLE_HP                               = 1
+METER_STYLE_BREATH                           = 2
+METER_STYLE_AKU                              = 3
+METER_STYLE_PHASEWALK                        = 4
+METER_STYLE_PHASEWALK_SUPERJUMP              = 5
+METER_STYLE_PHASEWALK_RECHARGE               = 6
+METER_STYLE_ROCKET                           = 7
+METER_STYLE_CHRONOS                          = 8
+METER_STYLE_DASH_BOOSTER                     = 9
+METER_STYLE_AKU_RECHARGE                     = 10
+METER_STYLE_COUNT                            = 11
 
-meter_wedges_dl_table                    = {
+meter_wedges_dl_table                        = {
     TEX_METER1,
     TEX_METER2,
     TEX_METER3,
@@ -579,7 +582,7 @@ meter_wedges_dl_table                    = {
     TEX_METER8,
 }
 
-meter_style_color_table                  = {
+meter_style_color_table                      = {
     { -- Generic
         { 255, 0,   0 }, { 255, 0, 0 }, { 255, 50, 0 }, { 255, 255, 0 },
         { 255, 255, 0 }, { 0, 255, 0 }, { 0, 255, 0 }, { 0, 200, 255 }
@@ -626,14 +629,14 @@ meter_style_color_table                  = {
     }
 }
 
-meter_style_icon_dl_table                = {
+meter_style_icon_dl_table                    = {
     TEX_HEART_METER,
     meter_breath_meter_breath_mesh,
     TEX_AKU_METER,
     meter_phase_meter_phase_mesh,
     meter_phase_meter_phase_mesh,
     meter_phase_meter_phase_mesh,
-    meter_rocket_meter_rocket_mesh,
+    TEX_ROCKET_METER,
     meter_chronos_meter_chronos_mesh,
     meter_booster_meter_booster_mesh,
     TEX_AKU_METER
@@ -778,10 +781,10 @@ function check_if_swap_ability_allowed(m)
     if isPaused then
         return false
     end
-    --[[if cur_obj_nearest_object_with_behavior(bhvShockRocket) ~= nil then
+    if m.marioObj.oBooParentBigBoo and m.marioObj.oBooParentBigBoo.behavior == get_behavior_from_id(bhvShockRocket) then
         return false
     end
-    if gMarioState.action == ACT_HM_FLY then
+    --[[if gMarioState.action == ACT_HM_FLY then
         return false
     end]]
 
@@ -838,6 +841,10 @@ function change_ability(picked_ability)
 
     --Mario Model
     gPlayerSyncTable[0].modelId = ability_struct[gPlayerSyncTable[0].abilityId].model_id
+end
+
+function is_2d_area()
+    return gNetworkPlayers[0].currLevelNum == LEVEL_LLL and gNetworkPlayers[0].currAreaIndex < 6
 end
 
 -- Saving

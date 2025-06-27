@@ -229,8 +229,32 @@ local function ability_functions_update(m)
             if (not aim) then
                 m.marioObj.oBooParentBigBoo = spawn_object2(m.marioObj, MODEL_WATCH_AIM, bhvGadgetAim);
             end
-        else
-            --no more gadget watch
+        end
+
+        if (m.controller.buttonPressed & L_TRIG) ~= 0 then
+            if ((m.action & ACT_GROUP_MASK) ~= ACT_GROUP_CUTSCENE and using_ability(m, ABILITY_SHOCK_ROCKET) and not m.marioObj.oBooParentBigBoo) then
+                if (is_2d_area()) then
+                    -- shock rocket cannot be used in 2d areas
+                    play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
+                else
+                    m.marioObj.oBooParentBigBoo = spawn_object_relative2(0, 0, 100, 0, m.marioObj, MODEL_SHOCK_ROCKET,
+                        bhvShockRocket);
+                end
+            end
+        end
+
+        if (using_ability(m, ABILITY_SHOCK_ROCKET)) then
+            if (m.marioObj.oBooParentBigBoo) then
+                local rocket = m.marioObj.oBooParentBigBoo
+
+                if (rocket.oAction == SHOCK_ROCKET_ACT_MOVE) then
+                    abilityMeterStyle = METER_STYLE_ROCKET;
+                    abilityMeter = math.min(math.floor(((300 - rocket.oTimer) / 300.0) * 8.0) + 1, 8);
+                    -- djui_chat_message_create(""..abilityMeter)
+                    -- toZeroMeter = TRUE;
+                    m.freeze=1
+                end
+            end
         end
     end
 
@@ -273,9 +297,9 @@ local function ability_functions_update(m)
     if not (using_ability(m, ABILITY_GADGET_WATCH)) then
         local aim = m.marioObj.oBooParentBigBoo
 
-        if (aim) then
+        if (aim and aim.behavior == get_behavior_from_id(bhvGadgetAim)) then
             obj_mark_for_deletion(aim);
-            m.marioObj.oBooParentBigBoo=nil
+            m.marioObj.oBooParentBigBoo = nil
         end
     end
 end
