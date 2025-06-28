@@ -2813,7 +2813,7 @@ end
 
 function bhv_star_piece_init(o)
     network_init_object(o, true,
-        { "oAction", "oGravity", "oVelY", "oShotByShotgun", "oTimer", "oPosY", "oFaceAngleYaw" })
+        { "oAction", "oGravity", "oVelY", "oShotByShotgun", "oTimer", "oPosY", "oFaceAngleYaw", "oHealth" })
 end
 
 function bhv_star_piece_loop(o)
@@ -3036,8 +3036,6 @@ local WATCH_DISTANCE = 1300.0
 local trinkets_shot_f = 0;
 
 local bruh_scale = 1.0
-local last_target = nil
-
 function find_nearest_watch_target(o)
     local targetable_behavior_list = {
         id_bhvFloorSwitchAnimatesObject,
@@ -3063,10 +3061,10 @@ function find_nearest_watch_target(o)
     local closest_dist = WATCH_DISTANCE
 
     for i = 1, #targetable_behavior_list do
-        result = obj_get_nearest_object_with_behavior_id(nearest_player_to_object(o), targetable_behavior_list[i])
+        result = obj_get_nearest_object_with_behavior_id(gMarioStates[0].marioObj, targetable_behavior_list[i])
 
         if result then
-            local this_dist = dist_between_objects(nearest_player_to_object(o), result)
+            local this_dist = dist_between_objects(gMarioStates[0].marioObj, result)
             if this_dist < closest_dist then
                 closest_dist = this_dist
                 closest = result
@@ -3079,10 +3077,10 @@ end
 
 function bhv_gadget_aim(o)
     local target = find_nearest_watch_target(o)
-    local m = nearest_mario_state_to_object(o)
+    local m = gMarioStates[0]
 
-    if last_target ~= target then
-        last_target = target
+    if o.oHiddenBlueCoinSwitch ~= target then
+        o.oHiddenBlueCoinSwitch = target
         bruh_scale = 1.0
         play_sound(SOUND_GENERAL_UNKNOWN3_2, gGlobalSoundSource)
     end
@@ -3098,13 +3096,16 @@ function bhv_gadget_aim(o)
         if (m.controller.buttonPressed & L_TRIG) ~= 0 then
             local laser
             if should_object_spawn() then
-                laser = spawn_object2(m.marioObj, MODEL_F_LASER, bhvFLaser)
+                laser = spawn_sync_object(bhvFLaser, MODEL_F_LASER, m.pos.x, m.pos.y, m.pos.z,
+                    function(l)
+                        l.oPosX, l.oPosY, l.oPosZ = get_hand_foot_pos_x(m, 0), get_hand_foot_pos_y(m, 0),
+                            get_hand_foot_pos_z(m, 0)
+                        l.oHomeX = target.oPosX
+                        l.oHomeY = target.oPosY
+                        l.oHomeZ = target.oPosZ
+                    end)
             end
-            laser.oPosX, laser.oPosY, laser.oPosZ = get_hand_foot_pos_x(m, 0), get_hand_foot_pos_y(m, 0),
-                get_hand_foot_pos_z(m, 0)
-            laser.oHomeX = target.oPosX
-            laser.oHomeY = target.oPosY
-            laser.oHomeZ = target.oPosZ
+
 
             local behavior = get_id_from_behavior(target.behavior)
 
@@ -3263,18 +3264,6 @@ end
 
 function shock_rocket_quit(obj)
     local m = gMarioStates[network_local_index_from_global(obj.parentObj.globalPlayerIndex)]
-    local o = obj
-    for i = 1, o.numCollidedObjs do
-        local other = o.collidedObjs[i]
-        if other ~= o.parentObj then
-            if other ~= m.marioObj then
-                local sirkibb = get_behavior_from_id(bhvSirKibble)
-                if not (other.parentObj.behavior == sirkibb and other.behavior == sirkibb) then
-                    attack_object(other, 2)
-                end
-            end
-        end
-    end
     obj_mark_for_deletion(obj)
 
     if (m.action & ACT_FLAG_INVULNERABLE) == 0 then
@@ -3283,7 +3272,7 @@ function shock_rocket_quit(obj)
 
     if m == gMarioStates[0] then
         camera_unfreeze()
-        m.marioObj.oBooParentBigBoo=nil
+        m.marioObj.oBooParentBigBoo = nil
     end
 
     -- gLakituState.mode = obj.oPreviousLakituCamMode
@@ -3387,7 +3376,7 @@ function shock_rocket_move(obj)
             z = (coss(yaw) * cossPitch) *
                 ((obj.oForwardVel --[[* ability_chronos_current_slow_factor()]]) - camDecrement)
         };
-        local newPos={x=0,y=0,z=0};
+        local newPos = { x = 0, y = 0, z = 0 };
 
         vec3f_copy(gLakituState.focus, { x = obj.oPosX, y = obj.oPosY, z = obj.oPosZ });
 
@@ -3411,7 +3400,7 @@ end
 
 function bhv_shock_rocket_init(obj)
     obj.oFlags = obj.oFlags|OBJ_FLAG_ABILITY_CHRONOS_SMOOTH_SLOW
-    network_init_object(obj, true, {"oAction" ,"oTimer", "oPosX", "oPosY", "oPosZ"})
+    --network_init_object(obj, true, { "oAction", "oTimer", "oPosX", "oPosY", "oPosZ" })
 end
 
 function bhv_shock_rocket_loop(obj)

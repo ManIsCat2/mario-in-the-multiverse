@@ -623,7 +623,7 @@ const BehaviorScript bhvGadgetAim[] = {
     ID(id_bhvNewId),
     OR_INT(oFlags, OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE),
     BILLBOARD(),
-    CALL_NATIVE(bhv_star_piece_init),
+   // CALL_NATIVE(bhv_star_piece_init),
     BEGIN_LOOP(),
         CALL_NATIVE(bhv_gadget_aim),
     END_LOOP(),

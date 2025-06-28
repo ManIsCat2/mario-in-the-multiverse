@@ -224,27 +224,20 @@ local function ability_functions_update(m)
             end
         end
 
-        if (using_ability(m, ABILITY_GADGET_WATCH)) then
-            local aim = m.marioObj.oBooParentBigBoo
-            if (not aim) then
-                m.marioObj.oBooParentBigBoo = spawn_object2(m.marioObj, MODEL_WATCH_AIM, bhvGadgetAim);
-            end
-        end
-
         if (m.controller.buttonPressed & L_TRIG) ~= 0 then
             if ((m.action & ACT_GROUP_MASK) ~= ACT_GROUP_CUTSCENE and using_ability(m, ABILITY_SHOCK_ROCKET) and not m.marioObj.oBooParentBigBoo) then
                 if (is_2d_area()) then
                     -- shock rocket cannot be used in 2d areas
                     play_sound(SOUND_MENU_CAMERA_BUZZ, gGlobalSoundSource);
                 else
-                    m.marioObj.oBooParentBigBoo = spawn_object_relative2(0, 0, 100, 0, m.marioObj, MODEL_SHOCK_ROCKET,
+                    m.marioObj.oBooParentBigBoo = spawn_object_relative(0, 0, 100, 0, m.marioObj, MODEL_SHOCK_ROCKET,
                         bhvShockRocket);
                 end
             end
         end
 
         if (using_ability(m, ABILITY_SHOCK_ROCKET)) then
-            if (m.marioObj.oBooParentBigBoo) then
+            if (m.marioObj.oBooParentBigBoo and m.marioObj.oBooParentBigBoo.behavior == get_behavior_from_id(bhvShockRocket)) then
                 local rocket = m.marioObj.oBooParentBigBoo
 
                 if (rocket.oAction == SHOCK_ROCKET_ACT_MOVE) then
@@ -252,8 +245,22 @@ local function ability_functions_update(m)
                     abilityMeter = math.min(math.floor(((300 - rocket.oTimer) / 300.0) * 8.0) + 1, 8);
                     -- djui_chat_message_create(""..abilityMeter)
                     -- toZeroMeter = TRUE;
-                    m.freeze=1
+                    m.freeze = 1
                 end
+            end
+        end
+
+        if (using_ability(m, ABILITY_GADGET_WATCH)) then
+            local aim = m.marioObj.oBooParentBigBoo
+            if (not aim) then
+                m.marioObj.oBooParentBigBoo = spawn_object(m.marioObj, MODEL_WATCH_AIM, bhvGadgetAim);
+            end
+        else
+            local aim = m.marioObj.oBooParentBigBoo
+
+            if (aim and aim.behavior == get_behavior_from_id(bhvGadgetAim)) then
+                obj_mark_for_deletion(aim);
+                m.marioObj.oBooParentBigBoo = nil
             end
         end
     end
@@ -291,15 +298,6 @@ local function ability_functions_update(m)
                     GRAPH_RENDER_INVISIBLE
                     --make_mario_visible_again_after_this_frame = true]]
             end
-        end
-    end
-
-    if not (using_ability(m, ABILITY_GADGET_WATCH)) then
-        local aim = m.marioObj.oBooParentBigBoo
-
-        if (aim and aim.behavior == get_behavior_from_id(bhvGadgetAim)) then
-            obj_mark_for_deletion(aim);
-            m.marioObj.oBooParentBigBoo = nil
         end
     end
 end
