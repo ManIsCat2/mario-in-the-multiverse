@@ -104,7 +104,7 @@ const LevelScript level_lll_entry[] = {
 		OBJECT(MODEL_STAR, 6700, 600, 0, 0, 0, 0, (5 << 24), bhvL_EscapeStar),
 		TERRAIN(lll_area_1_collision),
 		MACRO_OBJECTS(lll_area_1_macro_objs),
-		STOP_MUSIC(0),
+//		SET_BACKGROUND_MUSIC(0x00, SEQ_L_HOT_SPAGHETTI),
 		TERRAIN_TYPE(TERRAIN_GRASS),
 		/* Fast64 begin persistent block [area commands] */
 		/* Fast64 end persistent block [area commands] */
@@ -119,8 +119,8 @@ const LevelScript level_lll_entry[] = {
 		WARP_NODE(8, LEVEL_LLL, 0x04, 2, WARP_NO_CHECKPOINT),
 		WARP_NODE(9, LEVEL_LLL, 0x05, 3, WARP_NO_CHECKPOINT),
 		WARP_NODE(241 /*death*/, LEVEL_LLL, 0x06, 0x05, WARP_NO_CHECKPOINT),
-	//	OBJECT(MODEL_ABILITY, -541, 2638, -12, 0, 0, 0, (ABILITY_KNIGHT << 16), bhvAbilityUnlock),
-	//	OBJECT(MODEL_ABILITY_SIGN, -11015, 16, 88, 0, -180, 0, (ABILITY_HM_FLY << 16), bhvStaticObject),
+//		OBJECT(MODEL_ABILITY, -541, 2638, -12, 0, 0, 0, (ABILITY_KNIGHT << 16), bhvAbilityUnlock),
+//		OBJECT(MODEL_ABILITY_SIGN, -11015, 16, 88, 0, -180, 0, (ABILITY_HM_FLY << 16), bhvStaticObject),
 		OBJECT(MODEL_L_ANCHOVY, 2459, -2978, 0, 0, 90, 0, 0x00000000, bhvL_Anchovy),
 		OBJECT(MODEL_L_ANCHOVY, -9591, 567, 0, 0, 90, 0, 0x00000000, bhvL_Anchovy),
 		OBJECT(MODEL_L_ANCHOVY, 9859, 327, 0, 0, 90, 0, 0x00000000, bhvL_Anchovy),
@@ -254,7 +254,7 @@ const LevelScript level_lll_entry[] = {
 		OBJECT(MODEL_THWOMP, 9609, 1016, 0, 0, -180, 0, 0x00000000, bhvThwomp2),
 		TERRAIN(lll_area_2_collision),
 		MACRO_OBJECTS(lll_area_2_macro_objs),
-		STOP_MUSIC(0),
+//		SET_BACKGROUND_MUSIC(0x00, SEQ_L_HOT_SPAGHETTI),
 		TERRAIN_TYPE(TERRAIN_GRASS),
 		/* Fast64 begin persistent block [area commands] */
 		/* Fast64 end persistent block [area commands] */
@@ -302,7 +302,7 @@ const LevelScript level_lll_entry[] = {
 		OBJECT(MODEL_NONE, -4450, -264, 0, 0, 0, 0, (1 << 16), bhvCoinFormation),
 		TERRAIN(lll_area_3_collision),
 		MACRO_OBJECTS(lll_area_3_macro_objs),
-		STOP_MUSIC(0),
+//		SET_BACKGROUND_MUSIC(0x00, SEQ_L_HOT_SPAGHETTI),
 		TERRAIN_TYPE(TERRAIN_GRASS),
 		/* Fast64 begin persistent block [area commands] */
 		/* Fast64 end persistent block [area commands] */
@@ -310,7 +310,7 @@ const LevelScript level_lll_entry[] = {
 	AREA(4, lll_area_4),
 		WARP_NODE(2, LEVEL_LLL, 0x02, 8, WARP_NO_CHECKPOINT),
 		WARP_NODE(3, LEVEL_LLL, 0x05, 2, WARP_NO_CHECKPOINT),
-		WARP_NODE(241 /*death*/, LEVEL_L, 0x06, 0x05, WARP_NO_CHECKPOINT),
+		WARP_NODE(241 /*death*/, LEVEL_LLL, 0x06, 0x05, WARP_NO_CHECKPOINT),
 		OBJECT(MODEL_L_ANCHOVY, 1674, 5230, 0, 0, 90, 0, 0x00000000, bhvL_Anchovy),
 		OBJECT(MODEL_L_ANCHOVY, 2100, 3535, 0, 0, 90, 0, 0x00000000, bhvL_Anchovy),
 		OBJECT(MODEL_L_ANCHOVY, 1048, -422, 0, 0, 90, 0, 0x00000000, bhvL_Anchovy),
@@ -344,7 +344,7 @@ const LevelScript level_lll_entry[] = {
 		OBJECT(MODEL_NONE, 204, 4570, 0, 0, 0, 0, (1 << 16), bhvCoinFormation),
 		TERRAIN(lll_area_4_collision),
 		MACRO_OBJECTS(lll_area_4_macro_objs),
-		STOP_MUSIC(0),
+//		SET_BACKGROUND_MUSIC(0x00, SEQ_L_HOT_SPAGHETTI),
 		TERRAIN_TYPE(TERRAIN_GRASS),
 		/* Fast64 begin persistent block [area commands] */
 		/* Fast64 end persistent block [area commands] */
@@ -458,17 +458,17 @@ const LevelScript level_lll_entry[] = {
 		OBJECT(MODEL_THWOMP, 11050, 1650, 0, 0, -180, 0, 0x00000000, bhvThwomp2),
 		TERRAIN(lll_area_5_collision),
 		MACRO_OBJECTS(lll_area_5_macro_objs),
-		STOP_MUSIC(0),
+//		SET_BACKGROUND_MUSIC(0x00, SEQ_L_HOT_SPAGHETTI),
 		TERRAIN_TYPE(TERRAIN_GRASS),
 		/* Fast64 begin persistent block [area commands] */
 		/* Fast64 end persistent block [area commands] */
 	END_AREA(),
 	AREA(6, lll_area_6),
-		WARP_NODE(1 /*exit1*/, LEVEL_LLL, 0x01, 0x0A, WARP_NO_CHECKPOINT),
-		WARP_NODE(2 /*exit2*/, LEVEL_LLL, 0x01, 0x0A, WARP_NO_CHECKPOINT),
+		WARP_NODE(1 /*exit1*/, LEVEL_BOB, 0x01, 0x0A, WARP_NO_CHECKPOINT),
+		WARP_NODE(2 /*exit2*/, LEVEL_BOB, 0x01, 0x0A, WARP_NO_CHECKPOINT),
 		WARP_NODE(3 /*door 1*/, LEVEL_LLL, 0x01, 5, WARP_NO_CHECKPOINT),
 		WARP_NODE(4 /*door 2*/, LEVEL_LLL, 0x07, 0x0A, WARP_NO_CHECKPOINT),
-		WARP_NODE(5/*death entry*/, LEVEL_LLL, 0x01, 0x0A, WARP_NO_CHECKPOINT),
+		WARP_NODE(5/*death entry*/, LEVEL_BOB, 0x01, 0x0A, WARP_NO_CHECKPOINT),
 		WARP_NODE(241 /*death*/, LEVEL_LLL, 0x06, 0x05, WARP_NO_CHECKPOINT),
 		WARP_NODE(0x0A /*entry*/, LEVEL_BOB, 0x01, 0x0A, WARP_NO_CHECKPOINT),
 		OBJECT(MODEL_NONE, 0, 265, 0, 0, 0, 0, (5 << 16), bhvDeathWarp),
@@ -482,7 +482,7 @@ const LevelScript level_lll_entry[] = {
 		OBJECT(MODEL_L_PEPPERMAN, 0, 0, 1267, 0, -180, 0, (7 << 24), bhvL_PeppermanNPC),
 		TERRAIN(lll_area_6_collision),
 		MACRO_OBJECTS(lll_area_6_macro_objs),
-		STOP_MUSIC(0),
+//		SET_BACKGROUND_MUSIC(0x00, SEQ_L_MONDAYS),
 		TERRAIN_TYPE(TERRAIN_GRASS),
 		/* Fast64 begin persistent block [area commands] */
 		/* Fast64 end persistent block [area commands] */

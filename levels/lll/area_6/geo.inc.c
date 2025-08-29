@@ -3,6 +3,11 @@
 const GeoLayout lll_area_6_geo[] = {
 	GEO_NODE_START(),
 	GEO_OPEN_NODE(),
+		GEO_DISPLAY_LIST(LAYER_FORCE, lll_dl_1nonuclid_mesh_layer_0),
+		GEO_TRANSLATE_NODE_WITH_DL(LAYER_OPAQUE, -935, 0, 0, lll_dl_2area1_preview_mesh_layer_1),
+		GEO_OPEN_NODE(),
+			GEO_DISPLAY_LIST(LAYER_ALPHA, lll_dl_2area1_preview_mesh_layer_4),
+		GEO_CLOSE_NODE(),
 		GEO_DISPLAY_LIST(LAYER_OPAQUE, lll_dl_antimatter_mesh_layer_1),
 		GEO_DISPLAY_LIST(LAYER_OPAQUE, lll_dl_Cylinder_mesh_layer_1),
 		GEO_DISPLAY_LIST(LAYER_ALPHA, lll_dl_Cylinder_mesh_layer_4),
